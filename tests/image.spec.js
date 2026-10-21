@@ -104,10 +104,10 @@ test.describe('カスタマイザー：画像の貼り付け', () => {
   test('画像はシェルの形で切り抜かれ、外側にはみ出さない', async ({ page }, testInfo) => {
     await gotoHome(page);
     await page.evaluate(() => document.getElementById('preview').scrollIntoView({ block: 'center', behavior: 'instant' }));
-    // 外側：前面シェルの外だが画像の範囲内（画像は 560x560 で中心 (302,219.5)）。
-    // (300,262) は中央下の本体（背面シェル側）で、前面シェルの画像が乗ってはいけない場所
-    const outside = [[300, 30], [300, 330], [300, 262]];
-    const inside = [[125, 105], [540, 250]];
+    // 写真モードの座標（1536×1024）。画像は前面シェル（両翼）の範囲を覆う大きさで、中心 (761,503)。
+    // 外側：背景（上・グリップの間）と、中央の黒い本体（前面シェルではないので画像が乗ってはいけない）
+    const outside = [[761, 60], [761, 760], [761, 470]];
+    const inside = [[250, 500], [1250, 600]];
     const pts = await toClient(page, [...outside, ...inside]);
     const before = await pixels(page, pts);
     await upload(page, 'magenta.png', 'image/png', await makeImage(page, 1000, 1000, 'image/png', '#ff00ff'));
@@ -117,9 +117,9 @@ test.describe('カスタマイザー：画像の貼り付け', () => {
     await shot(page, testInfo, '04-image-clip');
     outside.forEach((p, i) => expect(diff(before[i], after[i]), `外側 ${p} は変化しない`).toBeLessThanOrEqual(6));
     inside.forEach((p, i) => expect(diff(before[outside.length + i], after[outside.length + i]), `内側 ${p} は画像に変わる`).toBeGreaterThan(60));
-    // DOM上も clipPath の中にある
-    const clip = await art(page).evaluate((el) => el.parentNode.getAttribute('clip-path'));
-    expect(clip).toMatch(/^url\(#.+clip-front-shell\)$/);
+    // DOM上もパーツの形（写真モードはマスク、イラストは clipPath）の中にある
+    const clip = await art(page).evaluate((el) => el.parentNode.getAttribute('mask') || el.parentNode.getAttribute('clip-path'));
+    expect(clip).toMatch(/^url\(#.+(mask|clip)-front-shell\)$/);
   });
 
   test('マウスのドラッグで位置が変わり、スライダーで拡大・回転できる', async ({ page }, testInfo) => {

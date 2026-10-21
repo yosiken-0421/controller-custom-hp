@@ -28,6 +28,7 @@ test.describe('カート', () => {
     testInfo.annotations.push({ type: 'thumbnail', description: src.slice(0, 22) });
     await expect(items.first().locator('.cart-spec')).toContainText('#FF6B2C');
     await expect(items.first().locator('.cart-spec')).toContainText('+IMG');
+    await page.waitForTimeout(400); // ドロワーのアニメーション完了を待ってから撮影
     await shot(page, testInfo, '05-cart');
 
     await items.first().locator('.qty-inc').click();

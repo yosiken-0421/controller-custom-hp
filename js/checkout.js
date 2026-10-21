@@ -62,7 +62,7 @@
   function renderItems() {
     var items = SC.Cart.items();
     $('co-items').innerHTML = items.map(function (it, i) {
-      var thumb = SC.CartUI.isSafeThumb(it.thumb) ? '<img src="' + it.thumb + '" alt="" width="96" height="67">' : '';
+      var thumb = SC.CartUI.isSafeThumb(it.thumb) ? '<img src="' + it.thumb + '" alt="" width="96" height="64">' : '';
       return '<li>' + thumb + '<div><p>カスタムシェル #' + (i + 1) + ' × <span class="mono">' + it.qty + '</span></p>' +
         '<p class="mono small">' + SC.CartUI.summary(it.config).join(' / ') + '</p></div></li>';
     }).join('');

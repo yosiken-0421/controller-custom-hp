@@ -15,7 +15,8 @@
     font-family: "Archivo", "Yu Gothic UI", "Yu Gothic", "Meiryo", sans-serif;
     color: #ebe7df;
   }
-  #pad { position: absolute; top: 50%; width: 56vw; aspect-ratio: 600 / 420; transform: translate(-50%, -50%); }
+  #pad { position: absolute; top: 50%; width: 56vw; aspect-ratio: 3 / 2; transform: translate(-50%, -50%); border: 1px solid #3a3c41; overflow: hidden; }
+  #pad svg { display: block; width: 100%; height: 100%; }
   .spec { position: absolute; left: 4.4vw; bottom: 6vh; font: 600 1.6vw/1.4 Consolas, "Courier New", monospace; color: #ff6b2c; letter-spacing: .03em; }
   .brand { position: absolute; left: 4.4vw; top: 5.5vh; display: flex; align-items: center; gap: 1vw; font-weight: 900; font-size: 1.9vw; letter-spacing: .14em; }
   .brand i { width: 1.6vw; height: 1.6vw; background: #ff6b2c; clip-path: polygon(0 0, 100% 0, 100% 62%, 62% 100%, 0 100%); }
@@ -36,18 +37,19 @@
   <div class="end" id="end"><h1>SHELLCRAFT</h1><p>外装から、自分の一台へ。</p><small>PS5対応コントローラー シェルカスタム（架空デモ）</small></div>
   <div class="bar" id="bar"></div>
 </div>
-<script src="../../js/preview.js"></script>
+<script src="../../js/photo-data.js"></script>
+<script src="../../js/preview-photo.js"></script>
 <script>
 (function () {
-  var view = SC.Preview.create(document.getElementById('pad'), { idPrefix: 'promo' });
+  var view = SC.PreviewPhoto.create(document.getElementById('pad'), { idPrefix: 'promo' });
   var DURATION = 7;
 
-  // 配色のキーフレーム（前面 / グリップ / パッド / ボタン類 / スティック, 仕上げ）
+  // 配色のキーフレーム（前面 / 背面 / 中央・帯 / タッチパッド / ボタン類 / スティック, 仕上げ）
   var LOOKS = [
-    { f: '#e8e4da', g: '#2b2d31', p: '#e8e4da', b: '#3a3d42', s: '#202225', fin: 'matte', label: 'SHELL / FRONT — MATTE / #E8E4DA' },
-    { f: '#ff6b2c', g: '#1a1a1a', p: '#1a1a1a', b: '#e8e4da', s: '#1a1a1a', fin: 'gloss', label: 'SHELL / FRONT — GLOSS / #FF6B2C' },
-    { f: '#2f5d8a', g: '#8a8f94', p: '#8a8f94', b: '#e8e4da', s: '#2b2d31', fin: 'metal', label: 'SHELL / FRONT — METALLIC / #2F5D8A' },
-    { f: '#1a1a1a', g: '#1a1a1a', p: '#1a1a1a', b: '#ff6b2c', s: '#ff6b2c', fin: 'matte', label: 'SHELL / FRONT — MATTE / IMG: PATTERN 01', img: true }
+    { f: '#f2f2f2', g: '#f2f2f2', t: '#353537', p: '#3d3e42', b: '#353537', s: '#3d3e40', fin: 'matte', label: 'SHELL / FRONT — MATTE / #F2F2F2' },
+    { f: '#ff6b2c', g: '#1a1a1a', t: '#1a1a1a', p: '#1a1a1a', b: '#e8e4da', s: '#1a1a1a', fin: 'gloss', label: 'SHELL / FRONT — GLOSS / #FF6B2C' },
+    { f: '#2f5d8a', g: '#8a8f94', t: '#8a8f94', p: '#8a8f94', b: '#e8e4da', s: '#2b2d31', fin: 'metal', label: 'SHELL / FRONT — METALLIC / #2F5D8A' },
+    { f: '#1a1a1a', g: '#1a1a1a', t: '#ff6b2c', p: '#1a1a1a', b: '#ff6b2c', s: '#ff6b2c', fin: 'matte', label: 'SHELL / FRONT — MATTE / IMG: PATTERN 01', img: true }
   ];
   var SEG = 1.35; // 1配色あたりの秒数
 
@@ -83,6 +85,7 @@
   function apply(look) {
     view.setColor('front-shell', look.f);
     view.setColor('back-shell', look.g);
+    view.setColor('trim', look.t);
     view.setColor('touchpad', look.p);
     view.setColor('face-buttons', look.b);
     view.setColor('dpad', look.b);
@@ -96,14 +99,14 @@
     var cur = LOOKS[i], next = LOOKS[Math.min(LOOKS.length - 1, i + 1)];
     var k = ease(clamp((local - 0.7) / 0.3)); // 区間の最後 30% で次の色へ移る
     var look = {};
-    ['f', 'g', 'p', 'b', 's'].forEach(function (key) { look[key] = mix(cur[key], next[key], k); });
+    ['f', 'g', 't', 'p', 'b', 's'].forEach(function (key) { look[key] = mix(cur[key], next[key], k); });
     look.fin = k > .5 ? next.fin : cur.fin;
     apply(look);
 
     var wantImg = t >= SEG * 3 - 0.1;
     if (wantImg && !imageOn) { view.setImage('front-shell', PATTERN); view.setImage('touchpad', PATTERN); imageOn = true; }
     if (!wantImg && imageOn) { view.clearImage('front-shell'); view.clearImage('touchpad'); imageOn = false; }
-    if (imageOn) view.setImageTransform('front-shell', { x: -40 + (t - SEG * 3) * 30, rotate: 0 });
+    if (imageOn) view.setImageTransform('front-shell', { x: -60 + (t - SEG * 3) * 80, rotate: 0 });
 
     document.getElementById('spec').textContent = (k > .5 ? next : cur).label;
 

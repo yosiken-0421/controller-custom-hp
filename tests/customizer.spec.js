@@ -10,7 +10,7 @@ test.describe('カスタマイザー：色・仕上げ', () => {
     await page.click('.swatch[data-color="#FF6B2C"]');
     expect((await fillOf(page, 'front-shell')).toLowerCase()).toBe('#ff6b2c');
     // 実際に描画される色（computed style）も確認。0.25秒のトランジション後に到達する
-    await expect.poll(() => page.$eval('#preview [data-part="front-shell"] use.base', (el) => getComputedStyle(el).fill), { timeout: 2000 })
+    await expect.poll(() => page.$eval('#preview [data-part="front-shell"] .base', (el) => getComputedStyle(el).fill), { timeout: 2000 })
       .toBe('rgb(255, 107, 44)');
     expect(await fillOf(page, 'back-shell')).toBe(backBefore);
 

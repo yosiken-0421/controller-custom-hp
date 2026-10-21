@@ -86,7 +86,8 @@
 
   function init() {
     var host = $('preview');
-    var P = SC.Preview;
+    // 写真データがあれば写真レンダラー、無ければSVGイラストで描く
+    var P = SC.PreviewPhoto && SC.PreviewPhoto.available() ? SC.PreviewPhoto : SC.Preview;
     var view = P.create(host, { idPrefix: 'main' });
     var current = 'front-shell';
 

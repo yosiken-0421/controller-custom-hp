@@ -12,7 +12,7 @@
   }
 
   var FIN = { matte: 'MATTE', gloss: 'GLOSS', metal: 'METALLIC' };
-  var CODES = { 'front-shell': 'FRONT', 'back-shell': 'GRIP', 'touchpad': 'PAD', 'face-buttons': 'BTN', 'dpad': 'DPAD', 'sticks': 'STICK' };
+  var CODES = { 'front-shell': 'FRONT', 'back-shell': 'BACK', 'trim': 'TRIM', 'touchpad': 'PAD', 'face-buttons': 'BTN', 'dpad': 'DPAD', 'sticks': 'STICK' };
 
   function summary(config) {
     var parts = (config && config.parts) || {};
@@ -60,7 +60,7 @@
     list.innerHTML = items.map(function (it, i) {
       var lines = summary(it.config);
       var thumb = isSafeThumb(it.thumb)
-        ? '<img src="' + esc(it.thumb) + '" alt="カスタム内容のプレビュー" width="120" height="84">'
+        ? '<img src="' + esc(it.thumb) + '" alt="カスタム内容のプレビュー" width="120" height="80">'
         : '<span class="thumb-ph" aria-hidden="true"></span>';
       return '<li class="cart-item" data-id="' + esc(it.id) + '">' +
         '<div class="cart-thumb">' + thumb + '</div>' +

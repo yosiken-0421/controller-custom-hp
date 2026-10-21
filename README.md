@@ -4,6 +4,7 @@ PS5対応（DualSense対応）コントローラーの外装カスタムショ�
 
 - 見る：`index.html` をブラウザで開くだけで動きます（ビルド不要）
 - テスト：`npm install` → `npx playwright install` → `npm test`
+- 写真モードのデータ再生成：`npm run build:photo`
 - 宣伝動画の再生成：`npm run build:promo`
 - 公開用一式：`npm run build`（`dist/` に出力）
 - ローカルサーバー：`npm run serve`（http://127.0.0.1:4173/）
@@ -12,7 +13,9 @@ PS5対応（DualSense対応）コントローラーの外装カスタムショ�
 ```
 index.html            ページ本体
 css/style.css         デザイン
-js/preview.js         プレビュー描画モジュール（SVG。写真への差し替え口）
+js/preview-photo.js   プレビュー描画（写真モード。写真の上にパーツ別マスクで色を乗算）
+js/photo-data.js      写真モードのマスク・陰影画像（tools/build-photo.js で自動生成）
+js/preview.js         プレビュー描画（SVGイラスト。写真データが無いときの予備）
 js/customizer.js      カスタマイザーのUI（色・仕上げ・画像・ドラッグ）
 js/store.js           カートの状態と localStorage（失敗しても動く）
 js/cart.js            カートドロワー
@@ -21,6 +24,9 @@ js/main.js            起動処理（機能ごとに例外を分離）
 assets/               宣伝動画・ポスター・OGP画像・favicon
 tools/promo/          宣伝動画を描くページ
 tools/build-promo.js  Playwright で撮影 → ffmpeg で MP4/WebM
+tools/photo-parts.js  写真上のパーツ範囲（座標）
+tools/build-photo.js  マスクと陰影画像の生成
+tools/check-live.js   公開URLの読み込みエラー確認
 tools/build-dist.js   dist/ を作る
 tools/serve.js        確認用の静的サーバー
 tests/                Playwright テスト

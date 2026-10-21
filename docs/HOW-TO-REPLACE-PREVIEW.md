@@ -1,29 +1,32 @@
-# プレビューを実物写真に差し替える手順
+# プレビュー写真の差し替え手順
 
-今は `js/preview.js` の **SVGレンダラー**（オリジナル形状のゲームパッド）で描いています。
-描画処理はこのファイルにまとまっていて、UI（`js/customizer.js`）は次のメソッドしか使いません。
+カスタマイザーのプレビューは**写真モード**で描いています（`js/preview-photo.js`）。
+写真の上に、パーツごとのマスク（切り抜き）で色を「乗算」で重ねるので、写真の陰影や質感を残したまま色が変わります。
 
+写真データ（`js/photo-data.js`）が読み込めないときは、SVGイラスト（`js/preview.js`）に自動で切り替わります。
+
+## 仕組み
+| ファイル | 役割 |
+|---|---|
+| `assets/photo-src/controller-original.png` | 元の写真（1536×1024） |
+| `tools/photo-parts.js` | パーツの範囲（写真上の座標）。白と黒の境目は明るさで自動判定し、背景との境目とタッチパッド・スティックだけ座標で指定 |
+| `tools/build-photo.js` | 上の2つから、パーツごとのマスクと「陰影だけの画像」を作り、`js/photo-data.js` に書き出す |
+| `js/photo-data.js` | 自動生成（直接編集しない）。file:// でも動くよう、画像はデータURLで埋め込み |
+| `js/preview-photo.js` | 写真モードの描画 |
+
+パーツは `front-shell`（前面シェル）、`back-shell`（背面・グリップ）、`trim`（中央・帯）、`touchpad`、`face-buttons`、`dpad`、`sticks` の7つです。
+
+## 写真を差し替える手順
+1. 新しい写真を用意します。使えるのは、自分で撮影したもの、または商用利用が許可されているもの（素材サイトのライセンスや、AI生成サービスの利用規約で確認）です。メーカーの公式写真やネットで拾った画像は使えません。写真に**ロゴやボタン記号（△○×□）が写っている場合は、消してから**使います。
+2. `assets/photo-src/controller-original.png` を差し替えます。サイズが 1536×1024 以外のときは、`tools/photo-parts.js` の座標もそのサイズに合わせます。
+3. `tools/photo-parts.js` の座標を、新しい写真に合わせて描き直します。
+4. `npm run build:photo` を実行します。`test-results/photo-debug.png` にパーツごとの色分け画像が出るので、はみ出しや抜けがないかを確認し、必要なら手順3に戻ります。
+5. `npm run build:promo` で宣伝動画とOGP画像を作り直します。
+6. `npm test` を実行します。写真の構図が大きく変わった場合は、`tests/image.spec.js` の「はみ出さない」テストの確認点（写真上の座標）も直します。
+
+## 描画モジュールのメソッド（イラスト・写真で共通）
 | メソッド | 役割 |
 |---|---|
-| `setColor(part, hex)` | パーツの色を変える |
-| `setFinish(part, 'matte'｜'gloss'｜'metal')` | 仕上げを変える |
-| `setImage(part, {src, w, h})` / `setImageTransform(part, {x, y, scale, rotate})` / `clearImage(part)` | 画像の貼り付けと位置調整 |
-| `getState()` | 現在の構成を返す |
-| `toThumbnail(maxSide)` | カート用サムネイル（dataURL）を返す |
-| `element` / `svgPointScale()` | ドラッグ量の換算に使う |
-
-パーツIDは `front-shell` `back-shell` `touchpad` `face-buttons` `dpad` `sticks` です。
-
-## 写真モードに切り替える場合（今回は未実装）
-1. 自分で撮影した写真を用意します（正面・同じ画角・背景透過PNG推奨）。
-   - `assets/controller-photo.png`：コントローラー全体の写真（陰影が分かるよう、明るいグレー系の個体が扱いやすい）
-   - `assets/masks/front-shell.png` など：パーツごとのマスク画像（写真と同じサイズで、そのパーツの部分だけ白、それ以外は透明）
-2. `js/preview-photo.js` を作り、上の表と同じメソッドを持つ `SC.PreviewPhoto.create(container)` を実装します。
-   - 色：パーツごとに `<div>` を重ね、`background-color` に色を設定し、CSS の `mask-image: url(assets/masks/<part>.png)` で切り抜きます。写真の上に `mix-blend-mode: multiply` で重ねると、陰影を残したまま色が乗ります。
-   - 仕上げ：マスクと同じ形のハイライト用 PNG を重ねるか、グラデーションの不透明度を変えます。
-   - 画像：マスクで切り抜いた `<div>` の中に `<img>` を置き、`transform` で位置・拡大・回転を反映します。
-   - サムネイル：canvas に写真 → パーツ色（`globalCompositeOperation` でマスク）→ 画像の順に描画して `toDataURL('image/jpeg')`。
-3. `js/customizer.js` の `P.create(host, ...)` を `SC.PreviewPhoto.create(host, ...)` に変えます。`index.html` で `preview-photo.js` を `customizer.js` より前に読み込みます。
-4. `npm test` を実行します。色のテストは SVG の `fill` を見ているので、写真モード用に「パーツ要素の `background-color`」を確認する形へ書き換えてください。
-
-注意：メーカーの公式写真や他社の画像は使わず、ショップが自分で撮影した写真だけを使ってください。
+| `setColor(part, hex)` / `setFinish(part, 'matte'｜'gloss'｜'metal')` | 色・仕上げ |
+| `setImage(part, {src, w, h})` / `setImageTransform(part, {x, y, scale, rotate})` / `clearImage(part)` | 画像の貼り付けと位置調整（前面シェルとタッチパッド） |
+| `getState()` / `toThumbnail(maxSide)` | 構成の取得、カート用サムネイル |

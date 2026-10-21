@@ -6,7 +6,8 @@
     "build:promo": "node tools/build-promo.js",
     "build": "node tools/build-dist.js",
     "serve": "node tools/serve.js dist 4173",
-    "test": "node tools/build-dist.js && playwright test"
+    "test": "node tools/build-dist.js && playwright test",
+    "build:photo": "node tools/build-photo.js"
   },
   "keywords": [],
   "author": "",
