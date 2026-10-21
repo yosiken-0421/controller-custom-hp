@@ -14,6 +14,11 @@ git push
 ```
 push してから 1〜数分で公開版に反映されます。リポジトリの「Actions」タブにある「pages build and deployment」の完了で確認できます。
 
+反映後、公開URLで読み込みエラー（404など）が無いかを確認します。
+```bash
+node tools/check-live.js   # Chromium と WebKit で公開URLを開き、失敗したファイル・エラー・og:image を表示
+```
+
 ## 宣伝動画を作り直す
 ```bash
 npm run build:promo   # assets/promo.mp4 / promo.webm / promo-poster.jpg / og.png を再生成

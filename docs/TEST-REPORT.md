@@ -33,6 +33,14 @@
 | tests/file-protocol.spec.js | `dist/index.html` を file:// で開いても、色変更・画像貼り付け・カート・購入画面が動く |
 | tests/fixtures.js（全テスト共通） | **すべてのテストで、コンソールエラーとページエラーが 0 件**であることを確認 |
 
+## 公開版の確認（2026-10-21）
+公開URL：https://yosiken-0421.github.io/controller-custom-hp/
+`node tools/check-live.js` で Chromium と WebKit から開いた結果：
+- 読み込みに失敗したファイル 0 件（404 なし）、コンソールエラー・ページエラー 0 件
+- promo.mp4 の再生が進むことを確認
+- og:image（`https://yosiken-0421.github.io/controller-custom-hp/assets/og.png`）が 200・image/png で取得できる
+- 2回目の push の内容が公開版に反映されることを確認（`tools/check-live.js` が公開URLから取得できるようになった）
+
 ## 動画コーデックの実測（この Windows 環境）
 | プロジェクト | `canPlayType` H.264 / VP9 | 実際に再生されたファイル |
 |---|---|---|
