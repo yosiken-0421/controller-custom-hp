@@ -15,29 +15,32 @@
   'use strict';
   var SC = global.SC = global.SC || {};
   var NS = 'http://www.w3.org/2000/svg';
-  var VIEW_W = 600, VIEW_H = 380;
+  var VIEW_W = 600, VIEW_H = 420;
 
-  // このプロジェクト独自の形状（角を落とした工業的なシルエット）。特定製品の輪郭ではない。
+  // PS5対応コントローラーの部品構成（上部の大きなタッチパッド、下側に並ぶ2本のスティック、
+  // 長いグリップ、前面シェル＝上面と左右の羽根／背面シェル＝グリップと中央下の本体）に合わせた
+  // このプロジェクト独自の線画。特定製品の輪郭のトレースではない。
   var GEOMETRY = {
     'back-shell':
-      '<path d="M150 66H450C492 66 520 80 536 110L586 262L590 300L566 352L520 356L452 270H148L80 356L34 352L10 300L14 262L64 110C80 80 108 66 150 66Z"/>',
+      '<path d="M120 70C160 52 230 50 300 50S440 52 480 70C530 92 560 150 580 230C598 300 600 360 572 385C548 405 512 398 496 372C476 338 458 300 430 290C400 282 200 282 170 290C142 300 124 338 104 372C88 398 52 405 28 385C0 360 2 300 20 230C40 150 70 92 120 70Z"/>',
     'front-shell':
-      '<path d="M158 80H442C478 80 502 92 514 116L548 222L492 250H108L52 222L86 116C98 92 122 80 158 80Z"/>',
+      '<path d="M126 80C165 63 232 61 300 61S435 63 474 80C518 100 545 152 563 226C578 290 582 340 562 362C546 378 522 372 510 352C492 322 470 290 440 270C420 250 410 200 386 188H214C190 200 180 250 160 270C130 290 108 322 90 352C78 372 54 378 38 362C18 340 22 290 37 226C55 152 82 100 126 80Z"/>',
     'touchpad':
-      '<path d="M232 92H368L380 104V160L368 172H232L220 160V104Z"/>',
+      '<path d="M214 74H386Q398 74 398 86V176Q398 188 386 188H214Q202 188 202 176V86Q202 74 214 74Z"/>',
     'dpad':
-      '<path d="M128 116H152V140H176V164H152V188H128V164H104V140H128Z"/>',
+      '<rect x="113" y="120" width="24" height="30" rx="5"/><rect x="113" y="170" width="24" height="30" rx="5"/>' +
+      '<rect x="81" y="148" width="30" height="24" rx="5"/><rect x="139" y="148" width="30" height="24" rx="5"/>',
     'face-buttons':
-      '<circle cx="460" cy="124" r="13"/><circle cx="488" cy="152" r="13"/>' +
-      '<circle cx="460" cy="180" r="13"/><circle cx="432" cy="152" r="13"/>',
+      '<circle cx="475" cy="128" r="14"/><circle cx="507" cy="160" r="14"/>' +
+      '<circle cx="475" cy="192" r="14"/><circle cx="443" cy="160" r="14"/>',
     'sticks':
-      '<circle cx="222" cy="212" r="24"/><circle cx="378" cy="212" r="24"/>'
+      '<circle cx="228" cy="244" r="25"/><circle cx="372" cy="244" r="25"/>'
   };
 
   // 画像を貼れるパーツと、その外接矩形（画像の初期配置に使う）
   var IMAGE_PARTS = {
-    'front-shell': { x: 52, y: 80, w: 496, h: 170 },
-    'touchpad': { x: 220, y: 92, w: 160, h: 80 }
+    'front-shell': { x: 22, y: 61, w: 560, h: 317 },
+    'touchpad': { x: 202, y: 74, w: 196, h: 114 }
   };
 
   // 描画順（後ろ→前）
@@ -45,7 +48,7 @@
 
   var PARTS = [
     { id: 'front-shell', label: '前面シェル', code: 'SHELL / FRONT' },
-    { id: 'back-shell', label: 'グリップ', code: 'SHELL / GRIP' },
+    { id: 'back-shell', label: '背面・グリップ', code: 'SHELL / BACK' },
     { id: 'touchpad', label: '中央パッド', code: 'PAD / CENTER' },
     { id: 'face-buttons', label: 'ボタン', code: 'BTN / FACE' },
     { id: 'dpad', label: '十字キー', code: 'BTN / DPAD' },
@@ -60,10 +63,10 @@
 
   var DEFAULTS = {
     'front-shell': { color: '#e8e4da', finish: 'matte' },
-    'back-shell': { color: '#2b2d31', finish: 'matte' },
+    'back-shell': { color: '#1f2023', finish: 'matte' },
     'touchpad': { color: '#e8e4da', finish: 'matte' },
-    'face-buttons': { color: '#3a3d42', finish: 'gloss' },
-    'dpad': { color: '#3a3d42', finish: 'gloss' },
+    'face-buttons': { color: '#2a2c30', finish: 'gloss' },
+    'dpad': { color: '#2a2c30', finish: 'gloss' },
     'sticks': { color: '#202225', finish: 'matte' }
   };
 
@@ -103,7 +106,7 @@
       body += '<g class="part" data-part="' + part + '">';
       if (part === 'sticks') {
         // スティックの土台（くぼみ）は固定色
-        body += '<circle cx="222" cy="212" r="33" fill="#000" fill-opacity=".38"/><circle cx="378" cy="212" r="33" fill="#000" fill-opacity=".38"/>';
+        body += '<circle cx="228" cy="244" r="33" fill="#000" fill-opacity=".45"/><circle cx="372" cy="244" r="33" fill="#000" fill-opacity=".45"/>';
       }
       body += '<use class="base" href="#' + p + 'geo-' + part + '" fill="' + d.color + '" stroke="#000" stroke-opacity=".35" stroke-width="1.5"/>';
       if (IMAGE_PARTS[part]) {
@@ -111,21 +114,21 @@
       }
       body += '<use class="finish" href="#' + p + 'geo-' + part + '" fill="url(#' + p + 'fin-' + d.finish + ')" data-finish="' + d.finish + '" pointer-events="none"/>';
       if (part === 'sticks') {
-        body += '<circle cx="222" cy="212" r="15" fill="none" stroke="#000" stroke-opacity=".28" stroke-width="2" pointer-events="none"/>' +
-                '<circle cx="378" cy="212" r="15" fill="none" stroke="#000" stroke-opacity=".28" stroke-width="2" pointer-events="none"/>';
+        body += '<circle cx="228" cy="244" r="15" fill="none" stroke="#000" stroke-opacity=".28" stroke-width="2" pointer-events="none"/>' +
+                '<circle cx="372" cy="244" r="15" fill="none" stroke="#000" stroke-opacity=".28" stroke-width="2" pointer-events="none"/>';
       }
       body += '</g>';
       if (part === 'touchpad') {
         // 固定の小ボタンとスリット（色変更の対象外）
         body += '<g class="fixed" fill="#16171a" pointer-events="none">' +
-          '<rect x="194" y="100" width="12" height="24" rx="6"/><rect x="394" y="100" width="12" height="24" rx="6"/>' +
-          '<rect x="276" y="188" width="48" height="3" rx="1.5" opacity=".5"/><rect x="282" y="196" width="36" height="3" rx="1.5" opacity=".5"/>' +
+          '<rect x="182" y="82" width="10" height="24" rx="5"/><rect x="408" y="82" width="10" height="24" rx="5"/>' +
+          '<circle cx="300" cy="216" r="10" fill="#3a3c41"/><rect x="288" y="238" width="24" height="5" rx="2.5" fill="#3a3c41"/>' +
           '</g>';
       }
     });
     return '<svg xmlns="' + NS + '" viewBox="0 0 ' + VIEW_W + ' ' + VIEW_H + '" class="pad-svg" role="img" aria-label="コントローラーのプレビュー">' +
       '<defs>' + defs + '</defs>' +
-      '<ellipse cx="300" cy="364" rx="250" ry="10" fill="#000" fill-opacity=".35"/>' +
+      '<ellipse cx="300" cy="404" rx="270" ry="10" fill="#000" fill-opacity=".35"/>' +
       body + '</svg>';
   }
 

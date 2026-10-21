@@ -60,7 +60,7 @@
     list.innerHTML = items.map(function (it, i) {
       var lines = summary(it.config);
       var thumb = isSafeThumb(it.thumb)
-        ? '<img src="' + esc(it.thumb) + '" alt="カスタム内容のプレビュー" width="120" height="76">'
+        ? '<img src="' + esc(it.thumb) + '" alt="カスタム内容のプレビュー" width="120" height="84">'
         : '<span class="thumb-ph" aria-hidden="true"></span>';
       return '<li class="cart-item" data-id="' + esc(it.id) + '">' +
         '<div class="cart-thumb">' + thumb + '</div>' +

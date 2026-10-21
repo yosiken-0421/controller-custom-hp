@@ -104,9 +104,10 @@ test.describe('カスタマイザー：画像の貼り付け', () => {
   test('画像はシェルの形で切り抜かれ、外側にはみ出さない', async ({ page }, testInfo) => {
     await gotoHome(page);
     await page.evaluate(() => document.getElementById('preview').scrollIntoView({ block: 'center', behavior: 'instant' }));
-    // 外側：シェルの外だが画像の範囲内（画像は 496x496 で中心 (300,165)）
-    const outside = [[300, 40], [300, 320], [540, 90]];
-    const inside = [[300, 238], [120, 210]];
+    // 外側：前面シェルの外だが画像の範囲内（画像は 560x560 で中心 (302,219.5)）。
+    // (300,262) は中央下の本体（背面シェル側）で、前面シェルの画像が乗ってはいけない場所
+    const outside = [[300, 30], [300, 330], [300, 262]];
+    const inside = [[125, 105], [540, 250]];
     const pts = await toClient(page, [...outside, ...inside]);
     const before = await pixels(page, pts);
     await upload(page, 'magenta.png', 'image/png', await makeImage(page, 1000, 1000, 'image/png', '#ff00ff'));
