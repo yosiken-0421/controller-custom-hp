@@ -1,0 +1,387 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>SHELLCRAFT（仮）｜PS5対応コントローラーのシェルカスタム工房【架空デモ】</title>
+<meta name="description" content="DualSense対応コントローラーの外装（シェル）を、パーツごとの色・仕上げ・画像で組み立てるカスタム工房の架空デモサイトです。">
+<meta name="theme-color" content="#1b1c1e">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="SHELLCRAFT（仮）">
+<meta property="og:title" content="SHELLCRAFT（仮）｜コントローラーのシェルカスタム【架空デモ】">
+<meta property="og:description" content="PS5対応コントローラーの外装を、パーツごとに色・仕上げ・画像で組み立てる架空デモサイト。">
+<meta property="og:image" content="https://yosiken-0421.github.io/controller-custom-hp/assets/og.png">
+<meta property="og:url" content="https://yosiken-0421.github.io/controller-custom-hp/">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..900&amp;family=JetBrains+Mono:wght@400;600&amp;display=swap">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<a class="skip" href="#customizer">カスタマイザーへ移動</a>
+
+<header class="site-header" id="top">
+  <div class="header-inner">
+    <a class="logo" href="#top">
+      <span class="logo-mark" aria-hidden="true"></span>
+      <span class="logo-word">SHELLCRAFT</span><span class="logo-tag">仮</span><span class="visually-hidden">（トップへ）</span>
+    </a>
+    <nav class="nav" id="site-nav" aria-label="メインメニュー">
+      <ul>
+        <li><a href="#customizer">カスタム</a></li>
+        <li><a href="#gallery">ギャラリー</a></li>
+        <li><a href="#pricing">料金・納期</a></li>
+        <li><a href="#faq">FAQ</a></li>
+        <li><a href="#contact">お問い合わせ</a></li>
+      </ul>
+    </nav>
+    <button class="icon-btn cart-btn" type="button" id="cart-open" aria-controls="cart-drawer">
+      <span class="visually-hidden">カートを開く</span>
+      <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M3 4h2.2l2.3 11.2a1 1 0 0 0 1 .8h8.9a1 1 0 0 0 1-.8L20 8H6.4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><circle cx="9.5" cy="19.5" r="1.4" fill="currentColor"/><circle cx="17" cy="19.5" r="1.4" fill="currentColor"/></svg>
+      <span class="badge" id="cart-count">0</span><span class="visually-hidden">点</span>
+    </button>
+    <button class="icon-btn menu-btn" type="button" id="menu-toggle" aria-expanded="false" aria-controls="site-nav" aria-label="メニューを開く">
+      <span class="menu-bars" aria-hidden="true"></span>
+    </button>
+  </div>
+</header>
+
+<main id="main">
+  <!-- ヒーロー -->
+  <section class="hero" aria-labelledby="hero-title">
+    <div class="hero-copy">
+      <p class="mono kicker">PS5対応 / DualSense対応 — 外装カスタム工房（架空）</p>
+      <h1 id="hero-title"><span class="nb">塗って、組んで、</span><br><span class="nb">手に馴染む一台へ。</span></h1>
+      <p class="lead">前面シェル、グリップ、中央パッド、ボタン。パーツごとに色と仕上げを決めて、手元の写真や柄を貼り込めます。下のカスタマイザーで、そのまま組み立ててみてください。</p>
+      <div class="hero-actions">
+        <a class="btn btn-primary" href="#customizer">今すぐカスタム</a>
+        <a class="btn btn-ghost" href="#pricing">料金・納期を見る</a>
+      </div>
+    </div>
+    <figure class="hero-reel">
+      <div class="reel-frame" id="reel">
+        <video id="promo" autoplay muted loop playsinline preload="metadata" poster="assets/promo-poster.jpg" width="1280" height="720" aria-label="カラーと柄が切り替わる宣伝動画（音声なし）">
+          <source src="assets/promo.mp4" type="video/mp4">
+          <source src="assets/promo.webm" type="video/webm">
+        </video>
+        <script>
+          // 動きを減らす設定の人には自動再生しない（パース中に同期実行し、再生開始より先に止める）
+          (function () {
+            var v = document.getElementById('promo');
+            v.muted = true;
+            try {
+              if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                v.removeAttribute('autoplay'); v.autoplay = false; v.pause();
+              }
+            } catch (e) {}
+          })();
+        </script>
+        <button class="reel-toggle" type="button" id="promo-toggle" aria-label="動画を再生">
+          <svg class="i-play" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M7 4.5v15l12-7.5z" fill="currentColor"/></svg>
+          <svg class="i-pause" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M6.5 4.5h4v15h-4zM13.5 4.5h4v15h-4z" fill="currentColor"/></svg>
+          <span class="reel-toggle-text">再生</span>
+        </button>
+      </div>
+      <figcaption class="mono">REEL 01 — 7 SEC / LOOP / NO AUDIO</figcaption>
+    </figure>
+  </section>
+
+  <!-- カスタマイザー -->
+  <section class="section customizer" id="customizer" aria-labelledby="cz-title">
+    <div class="section-head">
+      <p class="mono idx">01 / CUSTOMIZER</p>
+      <h2 id="cz-title">パーツごとに、<br>色と仕上げを選ぶ。</h2>
+    </div>
+    <div class="cz-grid">
+      <div class="cz-stage">
+        <div class="cz-preview" id="preview" data-dropzone>
+          <noscript><p class="noscript">カスタマイザーの利用にはJavaScriptを有効にしてください。</p></noscript>
+        </div>
+        <p class="mono cz-hint" id="cz-hint">画像を貼ると、プレビュー上をドラッグして位置を調整できます。</p>
+      </div>
+
+      <div class="cz-panel">
+        <fieldset class="cz-block">
+          <legend class="mono">PART — 編集するパーツ</legend>
+          <div class="part-tabs" id="part-tabs"></div>
+        </fieldset>
+
+        <fieldset class="cz-block">
+          <legend class="mono">COLOR — 色</legend>
+          <div class="swatches" id="swatches"></div>
+          <div class="custom-color">
+            <label for="color-input">自由に色を指定</label>
+            <input type="color" id="color-input" value="#e8e4da">
+            <output class="mono" id="color-code" for="color-input">#E8E4DA</output>
+          </div>
+        </fieldset>
+
+        <fieldset class="cz-block">
+          <legend class="mono">FINISH — 仕上げ</legend>
+          <div class="seg" id="finishes"></div>
+        </fieldset>
+
+        <fieldset class="cz-block" id="image-block">
+          <legend class="mono">IMAGE — 画像の貼り付け</legend>
+          <p class="note" id="image-unsupported" hidden>画像は「前面シェル」と「中央パッド」に貼れます。</p>
+          <div id="image-tools">
+            <div class="drop" data-dropzone>
+              <input type="file" id="image-input" accept="image/*" class="visually-hidden">
+              <label for="image-input" class="btn btn-ghost file-btn">画像を選ぶ</label>
+              <span class="drop-text">またはここにドラッグ＆ドロップ（PC）</span>
+            </div>
+            <p class="error" id="image-error" role="alert" hidden></p>
+            <div class="img-adjust" id="img-adjust" hidden>
+              <label class="range">
+                <span>拡大・縮小 <output class="mono" id="scale-out">100%</output></span>
+                <input type="range" id="img-scale" min="30" max="300" value="100" step="1">
+              </label>
+              <label class="range">
+                <span>回転 <output class="mono" id="rotate-out">0°</output></span>
+                <input type="range" id="img-rotate" min="-180" max="180" value="0" step="1">
+              </label>
+              <button type="button" class="btn btn-ghost" id="img-remove">画像を外す</button>
+            </div>
+          </div>
+        </fieldset>
+
+        <div class="spec" aria-live="polite">
+          <p class="mono spec-title">BUILD SHEET</p>
+          <dl class="mono" id="spec"></dl>
+        </div>
+
+        <div class="cz-actions">
+          <button type="button" class="btn btn-ghost" id="cz-reset">リセット</button>
+          <button type="button" class="btn btn-ghost" id="cz-random">ランダム配色</button>
+          <button type="button" class="btn btn-primary" id="cz-add">この内容でカートに入れる</button>
+        </div>
+        <p class="status mono" id="cz-status" role="status"></p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ギャラリー -->
+  <section class="section gallery" id="gallery" aria-labelledby="gl-title">
+    <div class="section-head">
+      <p class="mono idx">02 / GALLERY</p>
+      <h2 id="gl-title">作例</h2>
+      <p class="sub">実際の作例写真に差し替える枠です。</p>
+    </div>
+    <ul class="gallery-grid">
+      <li class="ph ph-tall"><span class="ph-label">[写真] 作例 01 — 前面シェル 単色マット</span></li>
+      <li class="ph"><span class="ph-label">[写真] 作例 02 — グロス仕上げ</span></li>
+      <li class="ph"><span class="ph-label">[写真] 作例 03 — メタリック</span></li>
+      <li class="ph ph-wide"><span class="ph-label">[写真] 作例 04 — 画像プリント</span></li>
+      <li class="ph"><span class="ph-label">[写真] 作例 05 — ツートン</span></li>
+      <li class="ph"><span class="ph-label">[写真] 作例 06 — 中央パッドのみ</span></li>
+    </ul>
+  </section>
+
+  <!-- 料金・納期 -->
+  <section class="section pricing" id="pricing" aria-labelledby="pr-title">
+    <div class="section-head">
+      <p class="mono idx">03 / PRICE &amp; LEAD TIME</p>
+      <h2 id="pr-title">料金と納期の目安</h2>
+      <p class="sub">掲載している金額・日数はすべて仮の値です。</p>
+    </div>
+    <div class="table-wrap">
+      <table class="price-table">
+        <caption class="visually-hidden">料金と納期の目安（仮の値）</caption>
+        <thead><tr><th scope="col">内容</th><th scope="col">料金</th><th scope="col">納期の目安</th></tr></thead>
+        <tbody>
+          <tr><th scope="row">前面シェル 単色（マット／グロス）</th><td class="mono">¥0,000（デモ）</td><td class="mono">[日数]</td></tr>
+          <tr><th scope="row">メタリック仕上げ 追加</th><td class="mono">¥0,000（デモ）</td><td class="mono">[日数]</td></tr>
+          <tr><th scope="row">画像プリント（前面シェル／中央パッド）</th><td class="mono">¥0,000（デモ）</td><td class="mono">[日数]</td></tr>
+          <tr><th scope="row">ボタン・十字キー・スティックの色替え</th><td class="mono">¥0,000（デモ）</td><td class="mono">[日数]</td></tr>
+          <tr><th scope="row">送料</th><td class="mono">¥0,000（デモ）</td><td class="mono">—</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- 制作の流れ -->
+  <section class="section process" id="process" aria-labelledby="ps-title">
+    <div class="section-head">
+      <p class="mono idx">04 / PROCESS</p>
+      <h2 id="ps-title">注文から発送まで</h2>
+    </div>
+    <ol class="steps">
+      <li><p class="mono step-no">STEP 01 / ORDER</p><h3>注文</h3><p>カスタマイザーで組んだ内容で注文します。画像を使う場合は、内容をこちらで確認します。</p><div class="ph ph-step"><span class="ph-label">[写真] 注文内容の確認</span></div></li>
+      <li><p class="mono step-no">STEP 02 / PAINT</p><h3>塗装</h3><p>下地処理のあと、指定の色と仕上げで塗装・プリントします。</p><div class="ph ph-step"><span class="ph-label">[写真] 塗装工程</span></div></li>
+      <li><p class="mono step-no">STEP 03 / ASSEMBLY</p><h3>組み立て</h3><p>パーツを組み付け、ボタンの押し心地と動作を確認します。</p><div class="ph ph-step"><span class="ph-label">[写真] 組み立て</span></div></li>
+      <li><p class="mono step-no">STEP 04 / SHIP</p><h3>発送</h3><p>梱包して発送します。発送時にお知らせします。</p><div class="ph ph-step"><span class="ph-label">[写真] 梱包</span></div></li>
+    </ol>
+  </section>
+
+  <!-- FAQ -->
+  <section class="section faq" id="faq" aria-labelledby="faq-title">
+    <div class="section-head">
+      <p class="mono idx">05 / FAQ</p>
+      <h2 id="faq-title">よくある質問</h2>
+    </div>
+    <div class="faq-list">
+      <details>
+        <summary>どの機種に対応していますか？</summary>
+        <div class="faq-a"><p>PS5用ワイヤレスコントローラー（DualSense）に対応する外装を想定しています。その他のモデルへの対応は［対応機種を記載］。</p></div>
+      </details>
+      <details>
+        <summary>外装を交換するとメーカー保証はどうなりますか？</summary>
+        <div class="faq-a"><p>分解や外装の交換をした製品は、メーカー保証の対象外となる場合があります。メーカーの保証規定をご確認ください。当店独自の保証内容は［保証規定を記載］。</p></div>
+      </details>
+      <details>
+        <summary>返品や交換はできますか？</summary>
+        <div class="faq-a"><p>ご注文ごとに製作する商品です。返品・交換の条件は［返品ポリシーを記載］。届いた商品に不具合があった場合の対応は［対応内容を記載］。</p></div>
+      </details>
+      <details>
+        <summary>自分で用意した画像を使えますか？</summary>
+        <div class="faq-a"><p>ご自身で撮影・作成した画像か、使用の許可を得ている画像をお使いください。権利が確認できない画像の扱いは［対応方針を記載］。</p></div>
+      </details>
+      <details>
+        <summary>画面で見た色と実物の色は同じですか？</summary>
+        <div class="faq-a"><p>画面の色は、端末の設定や表示環境によって変わります。実際の塗装色とは差が出ることがあります。</p></div>
+      </details>
+      <details>
+        <summary>このサイトで注文するとどうなりますか？</summary>
+        <div class="faq-a"><p>本サイトは架空のデモです。注文・請求・送信は一切発生しません。</p></div>
+      </details>
+    </div>
+  </section>
+
+  <!-- お問い合わせ -->
+  <section class="section contact" id="contact" aria-labelledby="ct-title">
+    <div class="section-head">
+      <p class="mono idx">06 / CONTACT</p>
+      <h2 id="ct-title">お問い合わせ</h2>
+      <p class="sub">デモのため、入力内容はどこにも送信されません。</p>
+    </div>
+    <form class="form" id="contact-form" novalidate>
+      <div class="field">
+        <label for="ct-name">お名前 <span class="req">必須</span></label>
+        <input id="ct-name" name="name" type="text" autocomplete="name" required>
+        <p class="field-error" id="ct-name-err" hidden></p>
+      </div>
+      <div class="field">
+        <label for="ct-email">メールアドレス <span class="req">必須</span></label>
+        <input id="ct-email" name="email" type="email" inputmode="email" autocomplete="email" required>
+        <p class="field-error" id="ct-email-err" hidden></p>
+      </div>
+      <div class="field">
+        <label for="ct-msg">内容 <span class="req">必須</span></label>
+        <textarea id="ct-msg" name="message" rows="5" required></textarea>
+        <p class="field-error" id="ct-msg-err" hidden></p>
+      </div>
+      <button class="btn btn-primary" type="submit">送信内容を確認（デモ）</button>
+      <p class="status" id="contact-status" role="status"></p>
+    </form>
+  </section>
+</main>
+
+<!-- 購入画面（デモ） -->
+<section class="checkout" id="checkout" aria-labelledby="co-title" hidden>
+  <div class="checkout-inner">
+    <button type="button" class="btn btn-ghost back-btn" id="co-back">← カスタムに戻る</button>
+    <div class="demo-banner" role="note">
+      <strong>デモのため実際の注文・請求は発生しません。</strong>
+      入力内容はこのページの中だけで使い、どこにも送信・保存しません。
+    </div>
+    <div id="co-form-view">
+      <h2 id="co-title">ご注文手続き</h2>
+      <form class="form" id="checkout-form" novalidate>
+        <fieldset class="co-block">
+          <legend>お届け先</legend>
+          <div class="field">
+            <label for="co-name">氏名 <span class="req">必須</span></label>
+            <input id="co-name" name="name" type="text" autocomplete="name" required>
+            <p class="field-error" id="co-name-err" hidden></p>
+          </div>
+          <div class="field">
+            <label for="co-zip">郵便番号（7桁） <span class="req">必須</span></label>
+            <input id="co-zip" name="zip" type="text" inputmode="numeric" autocomplete="postal-code" placeholder="例：1000001" maxlength="8" required>
+            <p class="field-error" id="co-zip-err" hidden></p>
+          </div>
+          <div class="field">
+            <label for="co-addr">住所 <span class="req">必須</span></label>
+            <input id="co-addr" name="address" type="text" autocomplete="street-address" required>
+            <p class="field-error" id="co-addr-err" hidden></p>
+          </div>
+          <div class="field">
+            <label for="co-tel">電話番号 <span class="req">必須</span></label>
+            <input id="co-tel" name="tel" type="tel" inputmode="tel" autocomplete="tel" placeholder="例：09012345678" required>
+            <p class="field-error" id="co-tel-err" hidden></p>
+          </div>
+          <div class="field">
+            <label for="co-email">メールアドレス <span class="req">必須</span></label>
+            <input id="co-email" name="email" type="email" inputmode="email" autocomplete="email" required>
+            <p class="field-error" id="co-email-err" hidden></p>
+          </div>
+        </fieldset>
+
+        <fieldset class="co-block">
+          <legend>配送方法</legend>
+          <label class="choice"><input type="radio" name="ship" value="standard" checked> <span>通常配送 <span class="mono">¥0,000（デモ）</span></span></label>
+          <label class="choice"><input type="radio" name="ship" value="express"> <span>お急ぎ配送 <span class="mono">¥0,000（デモ）</span></span></label>
+        </fieldset>
+
+        <fieldset class="co-block">
+          <legend>支払い方法</legend>
+          <label class="choice"><input type="radio" name="pay" value="demo" checked> <span>デモ決済（実際の支払いは発生しません）</span></label>
+        </fieldset>
+
+        <div class="co-block">
+          <h3 class="co-sub">ご注文内容</h3>
+          <ul class="co-items" id="co-items"></ul>
+          <p class="mono co-total" id="co-total"></p>
+        </div>
+
+        <p class="error" id="co-error" role="alert" hidden></p>
+        <button class="btn btn-primary btn-block" type="submit" id="co-submit">注文を確定する（デモ）</button>
+      </form>
+    </div>
+    <div id="co-done" class="co-done" hidden tabindex="-1">
+      <p class="mono idx">ORDER — DEMO</p>
+      <h2>デモ注文が完了しました</h2>
+      <p>注文番号：<strong class="mono" id="co-order-no"></strong></p>
+      <p>これはデモです。実際の注文・請求・送信は行われていません。</p>
+      <button type="button" class="btn btn-primary" id="co-finish">トップに戻る</button>
+    </div>
+  </div>
+</section>
+
+<!-- カート -->
+<div class="drawer-backdrop" id="cart-backdrop" hidden></div>
+<aside class="drawer" id="cart-drawer" role="dialog" aria-modal="true" aria-labelledby="cart-title" hidden tabindex="-1">
+  <div class="drawer-head">
+    <h2 id="cart-title">カート</h2>
+    <button type="button" class="icon-btn" id="cart-close" aria-label="カートを閉じる">
+      <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2" fill="none"/></svg>
+    </button>
+  </div>
+  <p class="note storage-note" id="storage-note" hidden>この端末ではカートを保存できません（ページを閉じると消えます）。</p>
+  <ul class="cart-items" id="cart-items"></ul>
+  <p class="empty" id="cart-empty">カートは空です。</p>
+  <div class="drawer-foot">
+    <p class="mono subtotal" id="cart-subtotal"></p>
+    <button type="button" class="btn btn-primary btn-block" id="to-checkout" disabled>購入手続きへ</button>
+  </div>
+</aside>
+
+<footer class="site-footer">
+  <div class="footer-inner">
+    <p class="logo-word footer-logo">SHELLCRAFT<span class="logo-tag">仮</span></p>
+    <p class="demo-note">本サイトは架空のデモサイトです。商品・価格・注文はすべて架空で、実際の販売は行っていません。</p>
+    <p class="tm">PlayStation、PS5、DualSenseは株式会社ソニー・インタラクティブエンタテインメントの登録商標または商標です。本サイトは同社とは無関係の架空デモサイトです。</p>
+    <div class="legal-ph">[特定商取引法に基づく表記：販売業者・所在地・連絡先・販売価格・支払方法・引渡時期・返品について 等を記載する差し替え枠]</div>
+    <p class="mono copy">SHELLCRAFT（仮）— DEMO BUILD</p>
+  </div>
+</footer>
+
+<script src="js/preview.js" defer></script>
+<script src="js/store.js" defer></script>
+<script src="js/customizer.js" defer></script>
+<script src="js/cart.js" defer></script>
+<script src="js/checkout.js" defer></script>
+<script src="js/main.js" defer></script>
+</body>
+</html>

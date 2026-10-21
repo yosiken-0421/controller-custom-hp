@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<title>Promo render</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<!-- 宣伝動画をフレーム単位で描画するページ。window.renderFrame(秒) を Playwright から呼んで撮影する。 -->
+<style>
+  html, body { margin: 0; background: #1b1c1e; overflow: hidden; }
+  .stage {
+    position: relative; width: 100vw; height: 100vh; overflow: hidden;
+    background-color: #1b1c1e;
+    background-image: linear-gradient(#2a2c30 1px, transparent 1px), linear-gradient(90deg, #2a2c30 1px, transparent 1px);
+    background-size: 48px 48px;
+    font-family: "Archivo", "Yu Gothic UI", "Yu Gothic", "Meiryo", sans-serif;
+    color: #ebe7df;
+  }
+  #pad { position: absolute; top: 50%; width: 62vw; aspect-ratio: 600 / 380; transform: translate(-50%, -50%); }
+  .spec { position: absolute; left: 4.4vw; bottom: 6vh; font: 600 1.6vw/1.4 Consolas, "Courier New", monospace; color: #ff6b2c; letter-spacing: .03em; }
+  .brand { position: absolute; left: 4.4vw; top: 5.5vh; display: flex; align-items: center; gap: 1vw; font-weight: 900; font-size: 1.9vw; letter-spacing: .14em; }
+  .brand i { width: 1.6vw; height: 1.6vw; background: #ff6b2c; clip-path: polygon(0 0, 100% 0, 100% 62%, 62% 100%, 0 100%); }
+  .corner { position: absolute; right: 4.4vw; top: 5.5vh; font: 1.2vw Consolas, monospace; color: #aba79e; }
+  .end { position: absolute; right: 5vw; top: 50%; transform: translateY(-50%); text-align: right; }
+  .end h1 { margin: 0; font-size: 5.6vw; font-weight: 900; letter-spacing: .06em; line-height: 1; }
+  .end p { margin: 2.2vh 0 0; font-size: 2.3vw; font-weight: 700; }
+  .end small { display: block; margin-top: 2vh; font: 1.2vw Consolas, monospace; color: #aba79e; }
+  .bar { position: absolute; left: 0; bottom: 0; height: 0.8vh; background: #ff6b2c; }
+</style>
+</head>
+<body>
+<div class="stage">
+  <div class="brand"><i></i>SHELLCRAFT</div>
+  <div class="corner">DEMO / NOT A REAL SHOP</div>
+  <div id="pad"></div>
+  <div class="spec" id="spec"></div>
+  <div class="end" id="end"><h1>SHELLCRAFT</h1><p>外装から、自分の一台へ。</p><small>PS5対応コントローラー シェルカスタム（架空デモ）</small></div>
+  <div class="bar" id="bar"></div>
+</div>
+<script src="../../js/preview.js"></script>
+<script>
+(function () {
+  var view = SC.Preview.create(document.getElementById('pad'), { idPrefix: 'promo' });
+  var DURATION = 7;
+
+  // 配色のキーフレーム（前面 / グリップ / パッド / ボタン類 / スティック, 仕上げ）
+  var LOOKS = [
+    { f: '#e8e4da', g: '#2b2d31', p: '#e8e4da', b: '#3a3d42', s: '#202225', fin: 'matte', label: 'SHELL / FRONT — MATTE / #E8E4DA' },
+    { f: '#ff6b2c', g: '#1a1a1a', p: '#1a1a1a', b: '#e8e4da', s: '#1a1a1a', fin: 'gloss', label: 'SHELL / FRONT — GLOSS / #FF6B2C' },
+    { f: '#2f5d8a', g: '#8a8f94', p: '#8a8f94', b: '#e8e4da', s: '#2b2d31', fin: 'metal', label: 'SHELL / FRONT — METALLIC / #2F5D8A' },
+    { f: '#1a1a1a', g: '#1a1a1a', p: '#1a1a1a', b: '#ff6b2c', s: '#ff6b2c', fin: 'matte', label: 'SHELL / FRONT — MATTE / IMG: PATTERN 01', img: true }
+  ];
+  var SEG = 1.35; // 1配色あたりの秒数
+
+  function hexToRgb(h) { var n = parseInt(h.slice(1), 16); return [n >> 16 & 255, n >> 8 & 255, n & 255]; }
+  function mix(a, b, t) {
+    var x = hexToRgb(a), y = hexToRgb(b);
+    return '#' + x.map(function (v, i) { return Math.round(v + (y[i] - v) * t).toString(16).padStart(2, '0'); }).join('');
+  }
+  function ease(t) { return t < .5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2; }
+  function clamp(v) { return Math.max(0, Math.min(1, v)); }
+
+  // コードで生成する幾何学模様（著作権のある画像は使わない）
+  function pattern() {
+    var c = document.createElement('canvas'); c.width = 1000; c.height = 360;
+    var x = c.getContext('2d');
+    x.fillStyle = '#1a1a1a'; x.fillRect(0, 0, c.width, c.height);
+    var cols = ['#ff6b2c', '#e8e4da', '#2b2d31', '#8a8f94'];
+    for (var i = 0; i < 20; i++) {
+      for (var j = 0; j < 8; j++) {
+        x.fillStyle = cols[(i * 3 + j * 5) % cols.length];
+        x.beginPath();
+        var px = i * 50, py = j * 50;
+        if ((i + j) % 2) { x.moveTo(px, py); x.lineTo(px + 50, py); x.lineTo(px, py + 50); }
+        else { x.moveTo(px + 50, py); x.lineTo(px + 50, py + 50); x.lineTo(px, py + 50); }
+        x.fill();
+      }
+    }
+    return c.toDataURL('image/png');
+  }
+  var PATTERN = { src: pattern(), w: 1000, h: 360 };
+  var imageOn = false;
+
+  function apply(look) {
+    view.setColor('front-shell', look.f);
+    view.setColor('back-shell', look.g);
+    view.setColor('touchpad', look.p);
+    view.setColor('face-buttons', look.b);
+    view.setColor('dpad', look.b);
+    view.setColor('sticks', look.s);
+    ['front-shell', 'touchpad', 'face-buttons', 'dpad'].forEach(function (p) { view.setFinish(p, look.fin); });
+  }
+
+  window.renderFrame = function (t) {
+    var i = Math.min(LOOKS.length - 1, Math.floor(t / SEG));
+    var local = (t - i * SEG) / SEG;
+    var cur = LOOKS[i], next = LOOKS[Math.min(LOOKS.length - 1, i + 1)];
+    var k = ease(clamp((local - 0.7) / 0.3)); // 区間の最後 30% で次の色へ移る
+    var look = {};
+    ['f', 'g', 'p', 'b', 's'].forEach(function (key) { look[key] = mix(cur[key], next[key], k); });
+    look.fin = k > .5 ? next.fin : cur.fin;
+    apply(look);
+
+    var wantImg = t >= SEG * 3 - 0.1;
+    if (wantImg && !imageOn) { view.setImage('front-shell', PATTERN); view.setImage('touchpad', PATTERN); imageOn = true; }
+    if (!wantImg && imageOn) { view.clearImage('front-shell'); view.clearImage('touchpad'); imageOn = false; }
+    if (imageOn) view.setImageTransform('front-shell', { x: -40 + (t - SEG * 3) * 30, rotate: 0 });
+
+    document.getElementById('spec').textContent = (k > .5 ? next : cur).label;
+
+    // 終盤：コントローラーを左へ寄せ、ショップ名を出す
+    var endT = ease(clamp((t - 5.3) / 0.8));
+    var pad = document.getElementById('pad');
+    pad.style.left = (50 - 22 * endT) + '%';
+    pad.style.width = (62 - 18 * endT) + 'vw';
+    var end = document.getElementById('end');
+    end.style.opacity = endT;
+    end.style.transform = 'translate(' + (4 * (1 - endT)) + 'vw, -50%)';
+    document.getElementById('spec').style.opacity = 1 - endT;
+    document.getElementById('bar').style.width = (t / DURATION * 100) + '%';
+  };
+
+  window.PROMO_DURATION = DURATION;
+  window.renderFrame(/og/.test(location.search) ? DURATION : 0);
+})();
+</script>
+</body>
+</html>
